@@ -1,30 +1,28 @@
-"repositories": [
 {
-"description": "",
-        "license": "GNU",
-        "type":"package",
-        "package": {
-        "name": "lucderheld/greyLogException",
-                "version":"master",
-                "source": {
-                "url": "https://github.com/lucderheld/greyLogException.git",
-                        "type": "git",
-                        "reference":"master"
-                }
+    "name": "lucderheld/greyLogException",
+    "description": "A php exception logging implementation to send log-messages to a graylog compatible backend.",
+    "license": "GNU",
+    "authors": [ 
+        {
+            "name": "Lukas Spangenberg",
+            "email": "luc@def-shop.com"
+        }],
+    "require": {
+        "graylog2/gelf-php": "~1.5",
+        "php": ">=7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Gelf-php\\": "src/Gelf-php"
         }
-}
-"authors": 
-{
-"name": "Benjamin Zikarsky",
-        "email": "benjamin@zikarsky.de"
-}
-],
-        "require": {
-        "php": ">=7.0",
-                "graylog2/gelf-php": "~1.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.3",
+        "squizlabs/php_codesniffer": "~2.0"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.4.x-dev"
         }
-"autoload": {
-"psr-4": {
-"Gelf-php\\": "src/Gelf-php"
-}
+    }
 }
