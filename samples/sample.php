@@ -56,6 +56,9 @@ class KernelException extends GreyLogException{
     
 }
 
+/**
+ * Sample class
+ */
 class Kernel{
     public function __constuct(){
         echo PHP_EOL."Initialized successfully!".PHP_EOL;
