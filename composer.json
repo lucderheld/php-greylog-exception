@@ -1,0 +1,30 @@
+"repositories": [
+{
+"description": "",
+        "license": "GNU",
+        "type":"package",
+        "package": {
+        "name": "lucderheld/greyLogException",
+                "version":"master",
+                "source": {
+                "url": "https://github.com/lucderheld/greyLogException.git",
+                        "type": "git",
+                        "reference":"master"
+                }
+        }
+}
+"authors": 
+{
+"name": "Benjamin Zikarsky",
+        "email": "benjamin@zikarsky.de"
+}
+],
+        "require": {
+        "php": ">=7.0",
+                "graylog2/gelf-php": "~1.5"
+        }
+"autoload": {
+"psr-4": {
+"Gelf-php\\": "src/Gelf-php"
+}
+}
