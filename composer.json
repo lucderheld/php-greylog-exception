@@ -1,5 +1,5 @@
 {
-    "name": "lucderheld/greyLogException",
+    "name": "lucderheld/greylogexception",
     "description": "A php exception logging implementation to send log-messages to a graylog compatible backend.",
     "license": "GPL-3.0",
     "authors": [ 
