@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace lucderheld\greyLogException;
+namespace lucderheld\greylogexception;
 
 /**
  * This is the main class for the GreyLogException module.
@@ -146,6 +146,11 @@ class greyLogException extends \Exception {
                 $sClassToCall::$sExceptionArrayKey();
             }
             
+            //prepare transport objects to GreyLog2
+            $oTransportObject = new \Gelf\Transport\UdpTransport(self::LogServerIp, 12201, \Gelf\Transport\UdpTransport::CHUNK_SIZE_LAN);
+            $this->publisher = new \Gelf\Publisher();
+            $this->publisher->addTransport($oTransportObject);
+            
             //validate exception details
             $this->validateExceptionDetails($_aExceptionDetails);
 
@@ -160,11 +165,6 @@ class greyLogException extends \Exception {
             $this->sExceptionClass = $this->getTrace()[0]['class'];
             $this->sExceptionFunction = $this->getTrace()[0]['function'];
             $this->sModuleName = get_called_class();
-
-            //prepare transport objects to GreyLog2
-            $oTransportObject = new \Gelf\Transport\UdpTransport(self::LogServerIp, 12201, \Gelf\Transport\UdpTransport::CHUNK_SIZE_LAN);
-            $this->publisher = new \Gelf\Publisher();
-            $this->publisher->addTransport($oTransportObject);
 
             //log exception
             $sFunctionToCall = $this->sExceptionLevel;
@@ -194,7 +194,7 @@ class greyLogException extends \Exception {
                     $this->innerNotice("WrongConfig", "The exeption thrown, has no exceptionMessage.");
                 }
             } else {
-                $this->sExceptionLevel = LfException::ERROR;
+                $this->sExceptionLevel = self::ERROR;
                 $this->innerNotice("WrongConfig", "The exeption thrown, has no or invalid exceptionLevel, using ERROR instead.");
             }
         } else {
