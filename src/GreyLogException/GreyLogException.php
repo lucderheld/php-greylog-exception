@@ -21,7 +21,7 @@ namespace GreyLogException;
  * @author luc <luc@def-shop.com>
  * @version 0.1
  */
-class greyLogException extends \Exception {
+class GreyLogException extends \Exception {
     
     /**
      * The application name that is logging the exception (facility in GrayLog).
