@@ -1,7 +1,7 @@
 {
     "name": "lucderheld/greyLogException",
     "description": "A php exception logging implementation to send log-messages to a graylog compatible backend.",
-    "license": "GNU",
+    "license": "GPL-3.0",
     "authors": [ 
         {
             "name": "Lukas Spangenberg",
@@ -12,9 +12,7 @@
         "php": ">=7.0"
     },
     "autoload": {
-        "psr-4": {
-            "Gelf-php\\": "src/Gelf-php"
-        }
+        "classmap": ["src/"]
     },
     "require-dev": {
         "phpunit/phpunit": "~4.3",
