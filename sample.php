@@ -17,6 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require '../vendor/autoload.php';
+
+use GreyLogException\GreyLogException;
+
 /**
  * This class contains all exceptions that can be thrown in the class "Kernel".
  * All exceptions have to be defined in format: 
