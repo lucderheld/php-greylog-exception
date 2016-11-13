@@ -27,11 +27,12 @@ class GreyLogException extends \Exception {
     /**
      * The application name that is logging the exception (facility in GrayLog).
      */
-    const Application = "SampleApplicationName";
+    private $sApplication = "SampleApplicationName";
+    
     /**
      * The IP the GrayLog2-Server listens to.
      */
-    const LogServerIp = "192.168.1.39";
+    private $sLogServerIp = "127.0.0.1";
     
     /**
      * PSR LogLevel 8
@@ -118,6 +119,10 @@ class GreyLogException extends \Exception {
      * @param Mixed $_aAdditionalInformations The array of all other given parameters for setting them in the exceptionMessage.
      */
     public function __construct(Array $_aExceptionDetails, ...$_aAdditionalInformations) {
+        //get configruation
+        $this->sApplication = GreyLogExceptionConfig::$sApplicationNameToLog;
+        $this->sLogServerIp = GreyLogExceptionConfig::$sGreyLogServerIp;
+        
         try{
             //call user-code for exception if there is any
             $oClass = new \ReflectionClass(get_called_class());
@@ -128,7 +133,7 @@ class GreyLogException extends \Exception {
             }
             
             //prepare transport objects to GreyLog2
-            $oTransportObject = new \Gelf\Transport\UdpTransport(self::LogServerIp, 12201, \Gelf\Transport\UdpTransport::CHUNK_SIZE_LAN);
+            $oTransportObject = new \Gelf\Transport\UdpTransport($this->sLogServerIp, 12201, \Gelf\Transport\UdpTransport::CHUNK_SIZE_LAN);
             $this->publisher = new \Gelf\Publisher();
             $this->publisher->addTransport($oTransportObject);
             
@@ -223,7 +228,7 @@ class GreyLogException extends \Exception {
         $message->setShortMessage($sShortMessage . "_" . $this->iExceptionCode . ":" . $this->sExceptionShortMessage)
                 ->setLevel(self::NOTICE)
                 ->setFullMessage($sMessage)
-                ->setFacility(self::Application)
+                ->setFacility($this->sApplication)
                 ->setAdditional('ModuleName', $this->sModuleName)
                 ->setAdditional('ExceptionClassName', $this->sExceptionClass)
                 ->setAdditional('ExceptionFunctionName', $this->sExceptionFunction)
@@ -276,7 +281,7 @@ class GreyLogException extends \Exception {
      * @return Gelf\Message Sets the Facility and returns message object.
      */
     private function setFacility(){
-        return $this->gelfMessage->setFacility(self::Application);
+        return $this->gelfMessage->setFacility($this->sApplication);
     }
        
     /**
