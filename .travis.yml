@@ -1,0 +1,23 @@
+language: php
+php:
+  - '7'
+
+# upgrade to container-based travis
+sudo: false
+
+matrix:
+  fast_finish: true
+  
+before_script:
+  - composer self-update
+  - composer install --dev
+
+script: 
+  - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
+
+after_script:
+
+
+notifications:
+  email:
+    - luc@def-shop.com
