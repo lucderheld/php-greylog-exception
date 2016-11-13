@@ -12,7 +12,7 @@ Add php-greylog-exception to `composer.json` either by running `composer require
 
     "require": {
        // ...
-       "graylog2/php-greylog-exception": "1.0"
+       "lucderheld/php-greylog-exception": "1.0"
        // ...
     }
 
@@ -38,7 +38,7 @@ use GreyLogException\GreyLogException;
 use GreyLogException\GreyLogExceptionConfig;
 
 GreyLogExceptionConfig::$sApplicationNameToLog = "SampleApplicationName";
-GreyLogExceptionConfig::$sGreyLogServerIp = "192.168.178.32";
+GreyLogExceptionConfig::$sGreyLogServerIp = "127.0.0.1";
 
 class KernelException extends GreyLogException {
 
