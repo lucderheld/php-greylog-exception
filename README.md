@@ -21,23 +21,26 @@ Reinstall dependencies: `composer install`
 ### Example
 
 ```php
-    <?php
-
     require 'vendor/autoload.php';
 
     use lucderheld\GreyLogException\GreyLogException;
 
-    class KernelException extends GreyLogException{
-        const SAMPLE_EXCEPTION = [0000001, GreyLogException::WARNING, "This is the exception error text with a variable '%s'"]
+    class KernelException extends GreyLogException {
+
+        const SAMPLE_EXCEPTION = [0000001, GreyLogException::WARNING, "This is the exception error text with a variable '%s'"];
+
     }
 
-    class Kernel{
+    class Kernel {
+
         public $bBooted = false;
-        
-        public function __construct(){
-            if(!$bBooted){
+
+        public function __construct() {
+            if (!$bBooted) {
                 throw new KernelException(KernelException::SAMPLE_EXCEPTION, 'SomeValue');
             }
+        }
+
     }
 
     new Kernel();
