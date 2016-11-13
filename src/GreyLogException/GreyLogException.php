@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (C) 2016 luc <luc@def-shop.com>
  *
@@ -17,102 +18,119 @@
  */
 
 namespace lucderheld\GreyLogException;
+
 /**
  * This is the main class for the GreyLogException module.
  * @author luc <luc@def-shop.com>
  * @version 0.2
  */
 class GreyLogException extends \Exception {
-    
+
     /**
      * The application name that is logging the exception (facility in GrayLog).
      */
     private $sApplication = "SampleApplicationName";
-    
+
     /**
      * The IP the GrayLog2-Server listens to.
      */
     private $sLogServerIp = "127.0.0.1";
-    
+
     /**
      * PSR LogLevel 8
      */
     const EMERGENCY = \Psr\Log\LogLevel::EMERGENCY;
+
     /**
      * PSR LogLevel 7
      */
     const ALERT = \Psr\Log\LogLevel::ALERT;
+
     /**
      * PSR LogLevel 6
      */
     const CRITICAL = \Psr\Log\LogLevel::CRITICAL;
+
     /**
      * PSR LogLevel 5
      */
     const ERROR = \Psr\Log\LogLevel::ERROR;
+
     /**
      * PSR LogLevel 4
      */
     const WARNING = \Psr\Log\LogLevel::WARNING;
+
     /**
      * PSR LogLevel 3
      */
     const NOTICE = \Psr\Log\LogLevel::NOTICE;
+
     /**
      * PSR LogLevel 2
      */
     const INFO = \Psr\Log\LogLevel::INFO;
+
     /**
      * PSR LogLevel 1
      */
     const DEBUG = \Psr\Log\LogLevel::DEBUG;
+
     /**
      * The publisher object for GreyLog2-Server.
      * @var \Gelf\Publisher $publisher Holds the publisher object. 
      */
     private $publisher;
-    
+
     /**
      * The message object to send to GreyLog2-Server.
      * @var \Gelf\Message $message Holds the message object.
      */
-    private $gelfMessage; 
+    private $gelfMessage;
+
     /**
      * The actual exception message.
      * @var String  $sExceptionMessage  The message for the exception.
      */
     public $sExceptionMessage;
+
     /**
      * The actual exception code.
      * @var Integer $iExceptionCode Holds the exception code.
      */
     public $iExceptionCode;
+
     /**
      * The actual exception identifier/shortMessage.
      * @var String  $sExceptionShortMessage Holds the exceptionShortMessage. 
      */
     public $sExceptionShortMessage;
+
     /**
      * The actual exception level. Possible values:
      * EMERGENCY, ALERT, CRITICAL, ERROR, WARNING, NOTICE, INFO, DEBUG
      * @var String  $sExceptionLevel    Holds the exceptionLevel.
      */
     private $sExceptionLevel;
+
     /**
      * The actual class where the exception was thrown.
      * @var String  $sExceptionClass    Holds the exceptionClass.
      */
     private $sExceptionClass;
+
     /**
      * The actual function/method where the exception was thrown.
      * @var String  $sExceptionFunction Holds the exceptionFunction.
      */
     private $sExceptionFunction;
+
     /**
      * The actual exception class the exception came from.
      * @var String  $sModuleName    Holds the moduleName.
      */
     private $sModuleName;
+
     /**
      * Sends a new exception with the help of an exceptionDetails array and aditional parameters.
      * @param Array $_aExceptionDetails The exceptionDetails in form: "[int ExceptionCode, lfException::LOGLEVEL, string ExceptionMessage]".
@@ -122,21 +140,21 @@ class GreyLogException extends \Exception {
         //get configruation
         $this->sApplication = GreyLogExceptionConfig::$sApplicationNameToLog;
         $this->sLogServerIp = GreyLogExceptionConfig::$sGreyLogServerIp;
-        
-        try{
+
+        try {
             //call user-code for exception if there is any
             $oClass = new \ReflectionClass(get_called_class());
             $sExceptionArrayKey = array_search($_aExceptionDetails, $oClass->getConstants());
-            if($sExceptionArrayKey !== false && method_exists(get_called_class(), $sExceptionArrayKey)){
+            if ($sExceptionArrayKey !== false && method_exists(get_called_class(), $sExceptionArrayKey)) {
                 $sClassToCall = get_called_class();
                 $sClassToCall::$sExceptionArrayKey();
             }
-            
+
             //prepare transport objects to GreyLog2
             $oTransportObject = new \Gelf\Transport\UdpTransport($this->sLogServerIp, 12201, \Gelf\Transport\UdpTransport::CHUNK_SIZE_LAN);
             $this->publisher = new \Gelf\Publisher();
             $this->publisher->addTransport($oTransportObject);
-            
+
             //validate exception details
             $this->validateExceptionDetails($_aExceptionDetails);
             //format/create the exception message
@@ -156,6 +174,7 @@ class GreyLogException extends \Exception {
             $this->loggerPanic($this->sExceptionShortMessage);
         }
     }
+
     /**
      * Checks the exceptionArray for valid contents and sets its values.
      * Sets a standard value if details are missing in array.
@@ -182,6 +201,7 @@ class GreyLogException extends \Exception {
             $this->innerNotice("WrongConfig", "The exeption thrown, has no exceptionCode. Using '000000' instead.");
         }
     }
+
     /**
      * Formats the errorMessage and fills the variables with content if there are any. 
      * @param array $_aAdditionalInformations   An array containing all values for variables that has to be replaced in errorMessage.
@@ -196,6 +216,7 @@ class GreyLogException extends \Exception {
         }
         return $sFormatedExceptionMessage;
     }
+
     /**
      * Gets the number of variables that can be replaces by sprintf function in a string.
      * @param string $_sReplaceableString The string to search for replacable variables.
@@ -207,6 +228,7 @@ class GreyLogException extends \Exception {
         }
         return 0;
     }
+
     /**
      * Seaches the key of the given class constant value.
      * @param array $_aExceptionDetails The value of an exception constant.
@@ -218,6 +240,7 @@ class GreyLogException extends \Exception {
         $oClass = new \ReflectionClass($_sExceptionClass);
         return (array_search($_aExceptionDetails, $oClass->getConstants()));
     }
+
     /**
      * Sends an notice to GreyLog-Server before sending the actual exception.
      * @param string $sShortMessage The notice identifier.
@@ -237,6 +260,52 @@ class GreyLogException extends \Exception {
                 ->setAdditional('ExceptionLineNumber', $this->line);
         $this->publisher->publish($message);
     }
+
+    /**
+     * Sends an execption of type "EMERGENCY" to configured GreyLog2-Server.
+     */
+    private function emergency() {
+        $this->gelfMessage = new \Gelf\Message();
+        $this->setShortMessage();
+        $this->setMessage();
+        $this->setLevel();
+        $this->setFacility();
+        $this->setAdditionals();
+        $this->addParameters();
+        //send message
+        $this->publishMessage();
+    }
+
+    /**
+     * Sends an execption of type "ALERT" to configured GreyLog2-Server.
+     */
+    private function alert() {
+        $this->gelfMessage = new \Gelf\Message();
+        $this->setShortMessage();
+        $this->setMessage();
+        $this->setLevel();
+        $this->setFacility();
+        $this->setAdditionals();
+        $this->addParameters();
+        //send message
+        $this->publishMessage();
+    }
+
+    /**
+     * Sends an execption of type "CRITICAL" to configured GreyLog2-Server.
+     */
+    private function critical() {
+        $this->gelfMessage = new \Gelf\Message();
+        $this->setShortMessage();
+        $this->setMessage();
+        $this->setLevel();
+        $this->setFacility();
+        $this->setAdditionals();
+        $this->addParameters();
+        //send message
+        $this->publishMessage();
+    }
+
     /**
      * Sends an execption of type "ERROR" to configured GreyLog2-Server.
      */
@@ -251,44 +320,104 @@ class GreyLogException extends \Exception {
         //send message
         $this->publishMessage();
     }
-    
+
+    /**
+     * Sends an execption of type "WARNING" to configured GreyLog2-Server.
+     */
+    private function warning() {
+        $this->gelfMessage = new \Gelf\Message();
+        $this->setShortMessage();
+        $this->setMessage();
+        $this->setLevel();
+        $this->setFacility();
+        $this->setAdditionals();
+        $this->addParameters();
+        //send message
+        $this->publishMessage();
+    }
+
+    /**
+     * Sends an execption of type "NOTICE" to configured GreyLog2-Server.
+     */
+    private function notice() {
+        $this->gelfMessage = new \Gelf\Message();
+        $this->setShortMessage();
+        $this->setMessage();
+        $this->setLevel();
+        $this->setFacility();
+        $this->setAdditionals();
+        $this->addParameters();
+        //send message
+        $this->publishMessage();
+    }
+
+    /**
+     * Sends an execption of type "INFO" to configured GreyLog2-Server.
+     */
+    private function info() {
+        $this->gelfMessage = new \Gelf\Message();
+        $this->setShortMessage();
+        $this->setMessage();
+        $this->setLevel();
+        $this->setFacility();
+        $this->setAdditionals();
+        $this->addParameters();
+        //send message
+        $this->publishMessage();
+    }
+
+    /**
+     * Sends an execption of type "DEBUG" to configured GreyLog2-Server.
+     */
+    private function debug() {
+        $this->gelfMessage = new \Gelf\Message();
+        $this->setShortMessage();
+        $this->setMessage();
+        $this->setLevel();
+        $this->setFacility();
+        $this->setAdditionals();
+        $this->addParameters();
+        //send message
+        $this->publishMessage();
+    }
+
     /**
      * Sets the ShortMessage and returns message object.
      * @return Gelf\Message Sets the ShortMessage and returns message object.
      */
-    private function setShortMessage(){
+    private function setShortMessage() {
         return $this->gelfMessage->setShortMessage($this->iExceptionCode . ":" . $this->sExceptionShortMessage);
     }
-    
+
     /**
      * Sets the Message and returns message object.
      * @return Gelf\Message Sets the Message and returns message object.
      */
-    private function setMessage(){
+    private function setMessage() {
         return $this->gelfMessage->setFullMessage($this->sExceptionMessage);
     }
-    
+
     /**
      * Sets the Level and returns message object.
      * @return Gelf\Message Sets the Level and returns message object.
      */
-    private function setLevel(){
+    private function setLevel() {
         return $this->gelfMessage->setLevel($this->sExceptionLevel);
     }
-    
+
     /**
      * Sets the Facility and returns message object.
      * @return Gelf\Message Sets the Facility and returns message object.
      */
-    private function setFacility(){
+    private function setFacility() {
         return $this->gelfMessage->setFacility($this->sApplication);
     }
-       
+
     /**
      * Sets additional details from exception object and returns message object.
      * @return Gelf\Message Sets the additional details from exception object and returns message object.
      */
-    private function setAdditionals(){
+    private function setAdditionals() {
         $this->gelfMessage->setAdditional('ModuleName', $this->sModuleName);
         $this->gelfMessage->setAdditional('ExceptionClassName', $this->sExceptionClass);
         $this->gelfMessage->setAdditional('ExceptionFunctionName', $this->sExceptionFunction);
@@ -297,7 +426,7 @@ class GreyLogException extends \Exception {
         $this->gelfMessage->setAdditional('ExceptionLineNumber', $this->line);
         return $this->gelfMessage;
     }
-    
+
     /**
      * Checks if function/method parameters are equal to function declaration and logs warning if not.
      * Gets all names of function/method parameters and its values and adds it to message object as additional.
@@ -324,15 +453,17 @@ class GreyLogException extends \Exception {
         }
         return $this->gelfMessage;
     }
+
     /**
      * Publishes the message object to configured GreyLog2-Server instance.
      * @return Gelf\publisher The publisher object.
      */
-    private function publishMessage(){
+    private function publishMessage() {
         $this->publisher->publish($this->gelfMessage);
     }
-    
-    private function loggerPanic(string $_sMessage){
+
+    private function loggerPanic(string $_sMessage) {
         die("<html><head><title>Error</title></head><body><h1>Error!</h1><h3>Error while logging the error {$_sMessage}</h3><h4><style 'font-color:red'>Application stoped!</font></h4></body></html>");
     }
+
 }

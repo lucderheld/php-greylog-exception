@@ -1,9 +1,9 @@
-# greyLogException
-A very usefull state of the art exception class and handler for PHP 7
-[![Latest Stable Version](https://img.shields.io/packagist/v/lucderheld/greylogexception.svg?style=flat-square)](https://packagist.org/packages/lucderheld/greylogexception) [![Total Downloads](https://img.shields.io/packagist/dt/lucderheld/greylogexception.svg?style=flat-square)](https://packagist.org/packages/lucderheld/greylogexception) 
+# php-greylog-exception
+Is a very usefull state of the art exception class and handler for PHP 7
+[![Latest Stable Version](https://img.shields.io/packagist/v/lucderheld/php-greylog-exception.svg?style=flat-square)](https://packagist.org/packages/lucderheld/php-greylog-exception) [![Total Downloads](https://img.shields.io/packagist/dt/lucderheld/php-greylog-exception.svg?style=flat-square)](https://packagist.org/packages/lucderheld/php-greylog-exception) 
 ========
 
-Usage
+Usage / Installation
 -----
 
 ### Recommended installation via composer:
@@ -18,34 +18,145 @@ Add php-greylog-exception to `composer.json` either by running `composer require
 
 Reinstall dependencies: `composer install`
 
-### Example
+### Install GrayLog2-Server:
+
+How GrayLog2 can be installed is well documented at http://docs.graylog.org/en/2.1/pages/installation.html 
+The easiest way to test GreyLog is to run it as a Virtual-Machine:
+
+[Install GrayLog2-Server as VM](http://docs.graylog.org/en/2.1/pages/installation/virtual_machine_appliances.html)
+
+1. Usage Example
+-----
 
 ```php
-    require 'vendor/autoload.php';
 
-    use lucderheld\GreyLogException\GreyLogException;
+<?php
+    
+require 'vendor/autoload.php';
 
-    class KernelException extends GreyLogException {
+use GreyLogException\GreyLogException;
+use GreyLogException\GreyLogExceptionConfig;
 
-        const SAMPLE_EXCEPTION = [0000001, GreyLogException::WARNING, "This is the exception error text with a variable '%s'"];
+GreyLogExceptionConfig::$sApplicationNameToLog = "SampleApplicationName";
+GreyLogExceptionConfig::$sGreyLogServerIp = "192.168.178.32";
 
-    }
+class KernelException extends GreyLogException {
 
-    class Kernel {
+    const SAMPLE_EXCEPTION = [10000001, GreyLogException::WARNING, "This is the exception error text with a variable '%s'"];
 
-        public $bBooted = false;
+}
 
-        public function __construct() {
-            if (!$bBooted) {
-                throw new KernelException(KernelException::SAMPLE_EXCEPTION, 'SomeValue');
+class Kernel {
+
+    public static $bBooted = false;
+
+    public function __construct() {
+        try {
+            if (!Kernel::$bBooted) {
+                throw new KernelException(KernelException::SAMPLE_EXCEPTION, "someValue");
             }
+        } catch (KernelException $e) {
+            echo "Exception " . $e->getCode() . " was sent to GreyLog-Server " . GreyLogExceptionConfig::$sGreyLogServerIp;
         }
-
     }
 
-    new Kernel();
+}
+
+new Kernel();
 ``` 
 
-GreyLog output:
+### GreyLog output:
 
-       
+![Example output](https://github.com/lucderheld/php-greylog-exception/blob/master/samples/greylog-output.png)
+
+2. Combination with own functions
+-----
+
+php-greylog-exception can be combined with user defined exception-functions. There functions are triggered before the exception is logged to GreyLog.
+To define a exception-function, just create a static-function and name it the same as the actual exception.
+
+### Example:
+
+```php
+
+//...
+
+class KernelException extends GreyLogException {
+
+    const NOT_BOOTED = [10000002, GreyLogException::NOTICE, "This exceptions fires the function KernelException::NOT_BOOTED() before logging the exception to GrayLog"];
+
+    public static function NOT_BOOTED(){
+        Kernel::$bBooted = true;
+        echo "The function ".__FUNCTION__." was called!";
+    }
+}
+
+class Kernel {
+
+    public static $bBooted = false;
+
+    public function __construct() {
+        try {
+            if (!Kernel::$bBooted) {
+                throw new KernelException(KernelException::NOT_BOOTED);
+            }
+        } catch (KernelException $e) {
+            echo "Exception " . $e->getCode() . " was sent to GreyLog-Server " . GreyLogExceptionConfig::$sGreyLogServerIp;
+        }
+    }
+
+}
+
+new Kernel();
+``` 
+
+### PHP-Output:
+
+`The function NOT_BOOTED was called!Exception 10000002 was sent to GreyLog-Server 192.168.178.32`
+
+3. Parameter logging
+-----
+
+When an exception occours it is important to have as many informations as possible. The php-greylog-exception-class collects all the parameters that where called and saves them as serialized strings.
+
+### Example:
+
+```php
+//...
+
+class KernelException extends GreyLogException {
+
+    const PARAMETER_SAMPLE = [10000003, GreyLogException::ERROR, "This exception is a sample exception for showing variables"];
+
+}
+
+class Kernel {
+
+    public static $bBooted = false;
+
+    public function __construct(array $_aSampleArray) {
+        if (!Kernel::$bBooted) {
+            throw new KernelException(KernelException::PARAMETER_SAMPLE);
+        }
+    }
+
+}
+
+class SampleClass {}
+
+new Kernel(array(1, "two", new SampleClass()), 'NotNeededParameter');
+``` 
+
+### GreyLog output:
+
+![Example parameter output](https://github.com/lucderheld/php-greylog-exception/blob/master/samples/greylog-parameter-logging.png)
+
+License
+-----
+
+The library is licensed under the GPL3 license. For details check out the LICENSE file.
+
+Development & Contributing
+-----
+
+You are welcome to modify, extend and bugfix as much as you like! :-) If you have any questions/proposals/etc. you are welcome to contact me via email.
