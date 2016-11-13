@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace lucderheld\GreyLogException;
+namespace GreyLogException;
 
 /**
  * This is the main class for the GreyLogException module.
