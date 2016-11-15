@@ -4,6 +4,13 @@ build:
     environment:
         php:
             version: 7.0.8
+    tests:
+        override:
+            -
+                command: 'phpunit --coverage-text --coverage-clover=coverage.clover'
+                coverage:
+                    file: 'coverage.clover'
+                    format: 'clover'            
 filter:
     paths: ["src/*"]
     excluded_paths:
