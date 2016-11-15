@@ -72,7 +72,7 @@ new Kernel();
 2. Combination with own functions
 -----
 
-php-greylog-exception can be combined with user defined exception-functions. There functions are triggered before the exception is logged to GreyLog.
+php-greylog-exception can be combined with user defined exception-functions. The functions are triggered before the exception is logged to GreyLog.
 To define a exception-function, just create a static-function and name it the same as the actual exception.
 
 ### Example:
@@ -112,7 +112,7 @@ new Kernel();
 
 ### PHP-Output:
 
-`The function NOT_BOOTED was called!Exception 10000002 was sent to GreyLog-Server 192.168.178.32`
+`The function NOT_BOOTED was called!Exception 10000002 was sent to GreyLog-Server 127.0.0.1`
 
 3. Parameter logging
 -----
