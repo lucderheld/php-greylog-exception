@@ -1,9 +1,5 @@
 before_commands:
 - "composer install --dev"
-
-tools:
-external_code_coverage: true
-
 build:     
     environment:
         php:
