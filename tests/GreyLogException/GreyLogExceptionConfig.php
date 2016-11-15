@@ -18,33 +18,22 @@
  */
 
 namespace GreyLogException;
-use GreyLogException\GreyLogException;
+use GreyLogException\GreyLogExceptionConfig;
 
-class GreyLogExceptionTest extends TestCase
+class GreyLogExceptionConfigTest extends TestCase
 {
-    
-    protected $facility = "test-facility";
     
     public function setUp(){
         
     }
     
+    /**
+     * @covers GreyLogExceptionConfig::__construct
+     */
     public function testGreyLogException(){
         $this->assertEquals("A", "A");
     }
     
-    /**
-     * @covers GreyLogException::formatErrorMessage
-     */
-    public function testFormatErrorMessage(){
-        $this->assertEquals("A", "A");
-    }
-    
-    /**
-     * @covers GreyLogException::getNumberOfVariables
-     */
-    public function testGetNumberOfVariables(){
-        $this->assertEquals("A", "A");
-    }
 }
+
 
