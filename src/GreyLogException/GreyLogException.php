@@ -169,7 +169,7 @@ class GreyLogException extends \Exception {
             //log exception
             $sFunctionToCall = $this->sExceptionLevel;
             $this->$sFunctionToCall();
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             //use your own code in loggerPanic to do something when message cant be logged
             $this->loggerPanic($this->sExceptionShortMessage);
         }
@@ -235,10 +235,15 @@ class GreyLogException extends \Exception {
      * @param string $_sExceptionClass The class the exception constant has to be searched.
      * @return mixed the key for <i>needle</i> if it is found in the array, <b>FALSE</b> otherwise.
      * @todo Could be cached with storing all exceptions in opCache
+     * @todo Inner exception should be added when getExceptionCode fails. But at the moment innerNotice function has circular reference to ExceptinShortMessage
      */
     public function getExceptionCode($_aExceptionDetails, $_sExceptionClass) {
         $oClass = new \ReflectionClass($_sExceptionClass);
-        return (array_search($_aExceptionDetails, $oClass->getConstants()));
+        $sExceptionCode = array_search($_aExceptionDetails, $oClass->getConstants());
+        if($sExceptionCode === false){
+            $sExceptionCode = "UNKNOWN";
+        }
+        return $sExceptionCode;
     }
 
     /**
