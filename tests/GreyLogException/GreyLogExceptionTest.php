@@ -32,16 +32,16 @@ class GreyLogExceptionTest extends TestCase
     public function testGreyLogException(){
         $this->assertEquals("A", "A");
     }
-    
+   
     /**
-     * @covers GreyLogException::formatErrorMessage
+     * @covers \GreyLogException\GreyLogException::formatErrorMessage
      */
     public function testFormatErrorMessage(){
         $this->assertEquals("A", "A");
     }
     
     /**
-     * @covers GreyLogException::getNumberOfVariables
+     * @covers \GreyLogException\GreyLogException::getNumberOfVariables
      */
     public function testGetNumberOfVariables(){
         $this->assertEquals("A", "A");

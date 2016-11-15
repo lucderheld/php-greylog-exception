@@ -28,7 +28,7 @@ class GreyLogExceptionConfigTest extends TestCase
     }
     
     /**
-     * @covers GreyLogExceptionConfig::__construct
+     * @covers \GreyLogException\GreyLogExceptionConfig::__construct
      */
     public function testGreyLogException(){
         $this->assertEquals("A", "A");
