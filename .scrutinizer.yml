@@ -1,11 +1,34 @@
-# .scrutinizer.yml
-build:
-    environment:
-        php:
-            version: 7.0
+php:
+    version: 7.0.8
+filter:
+    excluded_paths:
+        - 'tests/*'
+checks:
+    php:
+        version: 7.0.8
+        use_self_instead_of_fqcn: true
+        uppercase_constants: true
+        simplify_boolean_return: true
+        return_doc_comments: true
+        return_doc_comment_if_not_inferrable: true
+        properties_in_camelcaps: true
+        prefer_while_loop_over_for_loop: true
+        parameters_in_camelcaps: true
+        parameter_doc_comments: true
+        param_doc_comment_if_not_inferrable: true
+        overriding_parameter: true
+        encourage_single_quotes: true
+        check_method_contracts:
+            verify_interface_like_constraints: true
+            verify_documented_constraints: true
+            verify_parent_constraints: true
+        classes_in_camel_caps: true
 
-before_commands:
-  - "composer install --dev"
-
-tools:
-external_code_coverage: true
+coding_style:
+    php:
+        spaces:
+            around_operators:
+                concatenation: true
+            within:
+                brackets: true
+build: true
