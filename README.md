@@ -1,6 +1,6 @@
 # php-greylog-exception
 Is a very usefull state of the art exception class and handler for PHP 7
-[![Latest Stable Version](https://img.shields.io/packagist/v/lucderheld/php-greylog-exception.svg?style=flat-square)](https://packagist.org/packages/lucderheld/php-greylog-exception) [![Total Downloads](https://img.shields.io/packagist/dt/lucderheld/php-greylog-exception.svg?style=flat-square)](https://packagist.org/packages/lucderheld/php-greylog-exception) 
+[![Latest Stable Version](https://img.shields.io/packagist/v/lucderheld/php-greylog-exception.svg?style=flat-square)](https://packagist.org/packages/lucderheld/php-greylog-exception) [![Total Downloads](https://img.shields.io/packagist/dt/lucderheld/php-greylog-exception.svg?style=flat-square)](https://packagist.org/packages/lucderheld/php-greylog-exception) [![Build Status](https://img.shields.io/travis/lucderheld/php-greylog-exception.svg?style=flat-square)](https://travis-ci.org/lucderheld/php-greylog-exception)
 ========
 
 Usage / Installation
