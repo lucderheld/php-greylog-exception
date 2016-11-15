@@ -1,0 +1,11 @@
+# .scrutinizer.yml
+build:
+    environment:
+        php:
+            version: 7.0
+
+before_commands:
+  - "composer install --dev"
+
+tools:
+external_code_coverage: true
